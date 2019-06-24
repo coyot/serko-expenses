@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expenses", "Serko.Expenses\Serko.Expenses.csproj", "{91D52C46-F013-473A-B581-3189CE1B0E47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expenses.API", "Serko.Expenses\Serko.Expenses.API.csproj", "{91D52C46-F013-473A-B581-3189CE1B0E47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expenses.Core", "Serko.Expenses.Core\Serko.Expenses.Core.csproj", "{BE2BCA8F-4463-45EE-B250-8CD6EAE113B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expenses.Core.Tests", "Serko.Expenses.Core.Tests\Serko.Expenses.Core.Tests.csproj", "{D4727A80-CA92-43B9-8F8A-DF2999CE4AA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{91D52C46-F013-473A-B581-3189CE1B0E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91D52C46-F013-473A-B581-3189CE1B0E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91D52C46-F013-473A-B581-3189CE1B0E47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE2BCA8F-4463-45EE-B250-8CD6EAE113B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE2BCA8F-4463-45EE-B250-8CD6EAE113B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE2BCA8F-4463-45EE-B250-8CD6EAE113B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE2BCA8F-4463-45EE-B250-8CD6EAE113B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4727A80-CA92-43B9-8F8A-DF2999CE4AA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4727A80-CA92-43B9-8F8A-DF2999CE4AA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4727A80-CA92-43B9-8F8A-DF2999CE4AA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4727A80-CA92-43B9-8F8A-DF2999CE4AA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
