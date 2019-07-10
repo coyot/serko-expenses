@@ -12,6 +12,7 @@ namespace Serko.Expenses.Core.Tests
         }
 
         BaseValueFinderImpl _sut;
+        private const string correctSimpleString = "<tag>test</tag>";
         private const string correctString = "asdf<tag>test</tag>asdf";
         private const string correctComplexString = "asdf<tag>test</tag>asdf<tag2>asdf</tag2>";
         private const string notCorrectComplexString = "asdf</tag>test</tag>asdf<tag2>asdf</tag2>";
@@ -31,8 +32,7 @@ namespace Serko.Expenses.Core.Tests
         [Test]
         public void ShouldProcess_CorrectComplexString() => Assert.That(_sut.ShouldProcess(correctComplexString), Is.True);
         [Test]
-        public void ShouldProcess_IncorrectComplexString() => Assert.That(_sut.ShouldProcess(correctComplexString), Is.True);
-
+        public void ShouldProcess_IncorrectComplexString() => Assert.That(_sut.ShouldProcess(notCorrectComplexString), Is.True);
         [Test]
         public void NotValid_EmptyString() => Assert.That(_sut.IsValid(string.Empty), Is.False);
         [Test]
@@ -43,7 +43,7 @@ namespace Serko.Expenses.Core.Tests
         public void Exception_DuplicateClosings() => Assert.Throws<InvalidInputException>(() => _sut.IsValid("</tag></tag>"));
 
         [Test]
-        public void Valid_OpenedAndClosed() => Assert.That(_sut.IsValid("<tag>test</tag>"), Is.True);
+        public void Valid_OpenedAndClosed() => Assert.That(_sut.IsValid(correctSimpleString), Is.True);
         [Test]
         public void Valid_OpenedAndClosedWithText() => Assert.That(_sut.IsValid(correctString), Is.True);
         [Test]
@@ -57,7 +57,21 @@ namespace Serko.Expenses.Core.Tests
         [Test]
         public void NotValid_OpenedAndClosedComplexAndMoreNotValidTags() => Assert.That(_sut.IsValid("asdf<tag>testasdf<tag2>asdf<tag2>"), Is.False);
         [Test]
+        public void Exception_TwiceClosedComplexAndMoreNotValidTags() => Assert.Throws<InvalidInputException>(() => _sut.IsValid(notCorrectComplexString));
+        [Test]
         public void ExctractValues_EmptyForEmptyString() => Assert.That(_sut.ExtractValues(string.Empty), Is.Null);
+
+        [Test]
+        public void ExctractValues_NotEmptyForOpenedAndClosedSimple()
+        {
+            var values = _sut.ExtractValues(correctSimpleString);
+
+            Assert.That(values, Is.Not.Null);
+            Assert.That(values.Keys, Is.Not.Empty);
+            Assert.That(values.Values, Is.Not.Empty);
+            Assert.That(values.ContainsKey(_sut.TagName), Is.True);
+            Assert.That(values[_sut.TagName], Is.EqualTo("test"));
+        }
         [Test]
         public void ExctractValues_NotEmptyForOpenedAndClosedComplex()
         {
@@ -69,6 +83,47 @@ namespace Serko.Expenses.Core.Tests
             Assert.That(values.ContainsKey(_sut.TagName), Is.True);
             Assert.That(values[_sut.TagName], Is.EqualTo("test"));
         }
+        [Test]
+        public void ExctractValues_NotEmptyForOpenedAndClosedWithChildren()
+        {
+            var values = _sut.ExtractValues("<tag><tag2>test2</tag2><tag3>test3</tag3></tag>");
+
+            Assert.That(values, Is.Not.Null);
+            Assert.That(values.Keys, Is.Not.Empty);
+            Assert.That(values.Values, Is.Not.Empty);
+            Assert.That(values["tag2"], Is.EqualTo("test2"));
+            Assert.That(values["tag3"], Is.EqualTo("test2"));
+        }
+
+        [Test]
+        public void ExtractIsland_NotEmptyForOpenedAndClosedWithChildren()
+        {
+            var value = _sut.ExtractIsland("<tag><tag2>test2</tag2><tag3>test3</tag3></tag>");
+
+            Assert.That(value, Is.Not.Null);
+            Assert.That(value, Is.Not.Empty);
+            Assert.That(value, Is.EqualTo("<tag><tag2>test2</tag2><tag3>test3</tag3></tag>"));
+        }
+
+        [Test]
+        public void ExtractIsland_NotEmptyForOpenedAndClosedWithChildrenComplex()
+        {
+            var value = _sut.ExtractIsland("asdf<tag><tag2>test2</tag2><tag3>test3</tag3></tag>asdf2");
+
+            Assert.That(value, Is.Not.Null);
+            Assert.That(value, Is.Not.Empty);
+            Assert.That(value, Is.EqualTo("<tag><tag2>test2</tag2><tag3>test3</tag3></tag>"));
+        }
+
+        [Test]
+        public void ExtractIsland_NotEmptyForOpenedAndClosedSimple()
+        {
+            var value = _sut.ExtractIsland(correctSimpleString);
+
+            Assert.That(value, Is.Not.Null);
+            Assert.That(value, Is.Not.Empty);
+            Assert.That(value, Is.EqualTo("<tag>test</tag>"));
+        }
 
         [Test]
         public void ExtractIsland_NotEmptyForOpenedAndClosedComplex()
@@ -77,7 +132,7 @@ namespace Serko.Expenses.Core.Tests
 
             Assert.That(value, Is.Not.Null);
             Assert.That(value, Is.Not.Empty);
-            Assert.That(value, Is.EqualTo("test"));
+            Assert.That(value, Is.EqualTo("<tag>test</tag>"));
         }
 
         [Test]
@@ -167,6 +222,18 @@ namespace Serko.Expenses.Core.Tests
             Assert.That(values.Values, Is.Not.Empty);
             Assert.That(values.Count, Is.EqualTo(1));
             Assert.That(values["tag"], Is.EqualTo("test"));
+        }
+
+        [Test]
+        public void Process_NotThisTagString()
+        {
+            var stringToTest = "asdf<tag2>test</tag2>asdfx";
+            var values = _sut.Process(stringToTest);
+
+            Assert.That(values, Is.Not.Null);
+            Assert.That(values.Keys, Is.Not.Empty);
+            Assert.That(values.Values, Is.Not.Empty);
+            Assert.That(values.Count, Is.EqualTo(0));
         }
     }
 }

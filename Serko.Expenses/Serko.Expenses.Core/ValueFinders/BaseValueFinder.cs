@@ -45,12 +45,30 @@ namespace Serko.Expenses.Core.ValueFinders
             if (!IsValid(text))
                 return null;
 
+            var result = new Dictionary<string, string>();
+            var island = this.ExtractIsland(text);
+            if (!HasChildren(island))
+            {
+                var openLength = OpeningTag.Length;
+                var closeLength = ClosingTag.Length;
+                var substring = island.Substring(openLength, island.Length - openLength - closeLength);
+                result.Add(TagName, substring);
+
+                return result;
+
+            }
             return null;
         }
 
         public string ExtractIsland(string text)
         {
-            return string.Empty;
+            if(text.StartsWith(OpeningTag) && text.EndsWith(ClosingTag))
+                return text;
+
+            var openIndex = text.IndexOf(OpeningTag);
+            var closeIndex = text.IndexOf(ClosingTag);
+
+            return text.Substring(openIndex, closeIndex + ClosingTag.Length - openIndex);
         }
 
         public bool HasChildren(string text)
@@ -79,7 +97,10 @@ namespace Serko.Expenses.Core.ValueFinders
 
         public bool ShouldProcess(string text)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(text))
+                return false;
+
+            return text.Contains(OpeningTag) || text.Contains(ClosingTag);
         }
     }
 }
