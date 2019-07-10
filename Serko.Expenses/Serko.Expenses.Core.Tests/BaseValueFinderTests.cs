@@ -16,6 +16,7 @@ namespace Serko.Expenses.Core.Tests
         private const string correctString = "asdf<tag>test</tag>asdf";
         private const string correctComplexString = "asdf<tag>test</tag>asdf<tag2>asdf</tag2>";
         private const string notCorrectComplexString = "asdf</tag>test</tag>asdf<tag2>asdf</tag2>";
+        private const string complexWithChildren = "<tag><tag2>test2</tag2><tag3>test3</tag3></tag>";
 
         [SetUp]
         public void Setup()
@@ -50,6 +51,8 @@ namespace Serko.Expenses.Core.Tests
         public void Valid_OpenedAndClosedComplexAndMoreValidTags() => Assert.That(_sut.IsValid(correctComplexString), Is.True);
         [Test]
         public void Valid_OpenedAndClosedComplexAndMoreNotValidTags() => Assert.That(_sut.IsValid("asdf<tag>test</tag>asdf<tag2>asdf<tag2>"), Is.True);
+        [Test]
+        public void Valid_ComplexWithChildren () => Assert.That(_sut.IsValid(complexWithChildren), Is.True);
         [Test]
         public void NotValid_OpenedAndClosedComplex() => Assert.That(_sut.IsValid("asdf<tag>testasdf"), Is.False);
         [Test]
@@ -94,11 +97,10 @@ namespace Serko.Expenses.Core.Tests
             Assert.That(values["tag2"], Is.EqualTo("test2"));
             Assert.That(values["tag3"], Is.EqualTo("test2"));
         }
-
         [Test]
         public void ExtractIsland_NotEmptyForOpenedAndClosedWithChildren()
         {
-            var value = _sut.ExtractIsland("<tag><tag2>test2</tag2><tag3>test3</tag3></tag>");
+            var value = _sut.ExtractIsland(complexWithChildren);
 
             Assert.That(value, Is.Not.Null);
             Assert.That(value, Is.Not.Empty);
@@ -108,11 +110,11 @@ namespace Serko.Expenses.Core.Tests
         [Test]
         public void ExtractIsland_NotEmptyForOpenedAndClosedWithChildrenComplex()
         {
-            var value = _sut.ExtractIsland("asdf<tag><tag2>test2</tag2><tag3>test3</tag3></tag>asdf2");
+            var value = _sut.ExtractIsland($"asdf{complexWithChildren}asdf2");
 
             Assert.That(value, Is.Not.Null);
             Assert.That(value, Is.Not.Empty);
-            Assert.That(value, Is.EqualTo("<tag><tag2>test2</tag2><tag3>test3</tag3></tag>"));
+            Assert.That(value, Is.EqualTo(complexWithChildren));
         }
 
         [Test]
