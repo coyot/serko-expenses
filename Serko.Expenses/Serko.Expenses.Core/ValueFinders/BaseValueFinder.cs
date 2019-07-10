@@ -10,9 +10,9 @@ namespace Serko.Expenses.Core.ValueFinders
     /// Base class for text operation - main idea is to find the "island" of xml
     /// value within the text.
     /// </summary>
-    abstract class BaseValueFinder : IValueFider
+    public abstract class BaseValueFinder : IValueFider
     {
-        public abstract string TagName { get; set; }
+        public abstract string TagName { get; }
 
         private string OpeningTag => $"<{TagName}>";
         private string ClosingTag => $"</{TagName}>";
@@ -21,13 +21,14 @@ namespace Serko.Expenses.Core.ValueFinders
         public bool IsValid(string text)
         {
             if (string.IsNullOrEmpty(text))
-                return true;
+                return false;
 
             var regexOpen = new Regex(OpeningTag);
+            var regexClose = new Regex(ClosingTag);
+
             if (regexOpen.Matches(text).Count > 1)
                 throw new InvalidInputException("Illegal state - too many opening tags");
 
-            var regexClose = new Regex(ClosingTag);
             if (regexClose.Matches(text).Count > 1)
                 throw new InvalidInputException("Illegal state - too many closing tags");
 
@@ -36,7 +37,7 @@ namespace Serko.Expenses.Core.ValueFinders
                 return text.Contains(ClosingTag);
             }
 
-            return true;
+            return false;
         }
 
         public IDictionary<string, string> ExtractValues(string text)

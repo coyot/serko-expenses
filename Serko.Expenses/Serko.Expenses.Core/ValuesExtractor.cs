@@ -21,7 +21,7 @@ namespace Serko.Expenses.Core
 
             foreach (var finder in Finders)
             {
-                result.Append(finder.Process(text));
+                //result.Append(finder.Process(text));
             }
 
             return result;
