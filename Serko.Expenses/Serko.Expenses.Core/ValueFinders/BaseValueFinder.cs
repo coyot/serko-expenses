@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Serko.Expenses.Core.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Serko.Expenses.Core.ValueFinders
 {
@@ -20,6 +22,14 @@ namespace Serko.Expenses.Core.ValueFinders
         {
             if (string.IsNullOrEmpty(text))
                 return true;
+
+            var regexOpen = new Regex(OpeningTag);
+            if (regexOpen.Matches(text).Count > 1)
+                throw new InvalidInputException("Illegal state - too many opening tags");
+
+            var regexClose = new Regex(ClosingTag);
+            if (regexClose.Matches(text).Count > 1)
+                throw new InvalidInputException("Illegal state - too many closing tags");
 
             if (text.Contains(OpeningTag))
             {

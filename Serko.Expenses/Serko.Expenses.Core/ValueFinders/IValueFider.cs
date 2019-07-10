@@ -8,6 +8,7 @@ namespace Serko.Expenses.Core.ValueFinders
     {
         IDictionary<string, string> Process(string text);
         bool IsValid(string text);
+        bool ShouldProcess(string text);
         bool HasChildren(string text);
         IDictionary<string, string> ExtractValues(string text);
         string ExtractIsland(string text);
