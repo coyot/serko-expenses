@@ -128,5 +128,24 @@ namespace Serko.Expenses.Core.Tests
             Assert.That(values["totalNoGst"], Is.EqualTo("100,00"));
             Assert.That(values["vendor"], Is.EqualTo("is vendor"));
         }
+
+        [Test]
+        public void ExctractValues_ExpenseSubTags()
+        {
+            var finders = new List<IValueFinder>() { new TotalValueFinder(), new VendorValueFinder(), new ExpenseValueFinder() };
+            var extractor = new ValuesExtractor(finders);
+
+            _sut = new SerkoEngine(extractor, calc);
+            var values = _sut.ParseAndCalculateGst("<expense><vendor>asdf</vendor></expense><total>1234</total>");
+
+            Assert.That(values, Is.Not.Null);
+            Assert.That(values.Keys, Is.Not.Empty);
+            Assert.That(values.Values, Is.Not.Empty);
+            Assert.That(values.Keys.Count, Is.EqualTo(5));
+            Assert.That(values["total"], Is.EqualTo("110"));
+            Assert.That(values["gst"], Is.EqualTo("10,00"));
+            Assert.That(values["totalNoGst"], Is.EqualTo("100,00"));
+            Assert.That(values["vendor"], Is.EqualTo("is vendor"));//<expense><vendor>asdf</vendor></expense><total>1234</total>
+        }
     }
 }

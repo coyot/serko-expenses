@@ -27,9 +27,15 @@ namespace Serko.Expenses.Core
                 foreach (var value in foundValues)
                 {
                     if (result.ContainsKey(value.Key))
-                        throw new InvalidInputException("Double tags in your input. Please validate!");
+                    {
+                        if (!result[value.Key].Equals(value.Value))
+                            throw new InvalidInputException($"Double <{value.Key}> tags in your input. Please validate!");
 
-                    result.Add(value.Key, value.Value);
+                    }
+                    else
+                    {
+                        result.Add(value.Key, value.Value);
+                    }
                 }
             }
 
