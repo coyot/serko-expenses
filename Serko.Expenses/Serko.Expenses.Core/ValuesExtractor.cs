@@ -28,8 +28,8 @@ namespace Serko.Expenses.Core
             if (string.IsNullOrEmpty(text))
                 return result;
 
-            this.ProcessSimple(text, result);
-            this.ProcessComplex(text, result);
+            ProcessSimple(text, result);
+            ProcessComplex(text, result);
 
             return result;
         }
