@@ -6,8 +6,9 @@ namespace Serko.Expenses.Core.Calculators
 {
     interface ICalculator
     {
-        string ValueName { get; set; }
+        decimal Tax { get; }
+        string ValueName { get; }
         decimal GetValue(IDictionary<string, string> elements);
-        decimal GetGskValue(decimal total);
+        decimal GetGstValue(decimal total);
     }
 }
