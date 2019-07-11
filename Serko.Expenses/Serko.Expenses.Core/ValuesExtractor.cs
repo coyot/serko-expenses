@@ -25,26 +25,52 @@ namespace Serko.Expenses.Core
             if (string.IsNullOrEmpty(text))
                 return result;
 
+            this.ProcessSimple(text, result);
+            this.ProcessComplex(text, result);
+
+            return result;
+        }
+
+        public IDictionary<string, string> ProcessSimple(string text, IDictionary<string, string> result)
+        {
             foreach (var finder in ValueFinders)
             {
                 var foundValues = finder.Process(text);
-
-                foreach (var value in foundValues)
-                {
-                    if (result.ContainsKey(value.Key))
-                    {
-                        if (!result[value.Key].Equals(value.Value))
-                            throw new InvalidInputException($"Double <{value.Key}> tags in your input. Please validate!");
-
-                    }
-                    else
-                    {
-                        result.Add(value.Key, value.Value);
-                    }
-                }
+                result = TryMerge(result, foundValues);
             }
 
             return result;
         }
+
+        public IDictionary<string, string> ProcessComplex(string text, IDictionary<string, string> result)
+        {
+            foreach (var finder in ValueComplexFinders)
+            {
+                var foundValues = finder.Process(text);
+                result = TryMerge(result, foundValues);
+            }
+
+            return result;
+        }
+
+        private IDictionary<string, string> TryMerge(IDictionary<string, string> to, IDictionary<string, string> from)
+        {
+            foreach (var value in from)
+            {
+                if (to.ContainsKey(value.Key))
+                {
+                    if (!to[value.Key].Equals(value.Value))
+                        throw new InvalidInputException($"Double <{value.Key}> tags in your input. Please validate!");
+
+                }
+                else
+                {
+                    to.Add(value.Key, value.Value);
+                }
+            }
+
+            return to;
+        }
+
     }
 }

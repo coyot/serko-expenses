@@ -6,6 +6,6 @@ namespace Serko.Expenses.Core.ValueFinders
 {
     public class DateValueFinder : BaseValueFinder
     {
-        public override string TagName => "description";
+        public override string TagName => "date";
     }
 }
