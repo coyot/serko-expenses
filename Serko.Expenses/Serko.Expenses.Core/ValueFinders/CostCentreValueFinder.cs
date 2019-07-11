@@ -10,7 +10,7 @@ namespace Serko.Expenses.Core.ValueFinders
 
         public override bool IsValid(string text)
         {
-            if (!text.Contains(OpeningTag))
+            if (!text.Contains(OpeningTag) && !text.Contains(ClosingTag))
                 return true;
 
             return base.IsValid(text);
@@ -18,7 +18,7 @@ namespace Serko.Expenses.Core.ValueFinders
 
         public override IDictionary<string, string> ExtractValues(string text)
         {
-            if (!text.Contains(OpeningTag))
+            if (!text.Contains(OpeningTag) && !text.Contains(ClosingTag))
                 return new Dictionary<string, string>() { { TagName, "UNKNOWN" } };
 
             return base.ExtractValues(text);
