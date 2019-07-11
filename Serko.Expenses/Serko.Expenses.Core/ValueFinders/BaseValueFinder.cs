@@ -126,7 +126,7 @@ namespace Serko.Expenses.Core.ValueFinders
             return ExtractValues(text);
         }
 
-        public bool ShouldProcess(string text)
+        public virtual bool ShouldProcess(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return false;

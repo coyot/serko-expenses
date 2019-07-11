@@ -16,5 +16,10 @@ namespace Serko.Expenses.Core.ValueFinders
 
             return base.IsValid(text);
         }
+
+        public override bool ShouldProcess(string text)
+        {
+            return true;
+        }
     }
 }

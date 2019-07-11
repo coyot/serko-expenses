@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Serko.Expenses.Core.Calculators
 {
-    interface ICalculator
+    public interface ICalculator
     {
         decimal Tax { get; }
         string ValueName { get; }
