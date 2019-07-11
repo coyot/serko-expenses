@@ -37,28 +37,46 @@ namespace Serko.Expenses.Core.Tests
         [Test]
         public void GetGst_10()
         {
-            var result = _sut.GetGstValue(110);
+            var vut = 110;
+            var resultGst = _sut.GetGstValue(vut);
+            var resultTotalNoGst = _sut.GetTotalExcludingGst(vut);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo(10));
+
+            Assert.That(resultGst, Is.Not.Null);
+            Assert.That(resultGst, Is.EqualTo(10));
+            Assert.That(resultTotalNoGst, Is.Not.Null);
+            Assert.That(resultTotalNoGst, Is.EqualTo(100));
+            Assert.That(resultGst + resultTotalNoGst, Is.EqualTo(vut));
         }
 
         [Test]
         public void GetGst_1000000000()
         {
-            var result = _sut.GetGstValue(11000000000);
+            var vut = 11000000000;
+            var resultGst = _sut.GetGstValue(vut);
+            var resultTotalNoGst = _sut.GetTotalExcludingGst(vut);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo(1000000000));
+
+            Assert.That(resultGst, Is.Not.Null);
+            Assert.That(resultGst, Is.EqualTo(1000000000));
+            Assert.That(resultTotalNoGst, Is.Not.Null);
+            Assert.That(resultTotalNoGst, Is.EqualTo(10000000000));
+            Assert.That(resultGst + resultTotalNoGst, Is.EqualTo(vut));
         }
 
         [Test]
         public void GetGst_0()
         {
-            var result = _sut.GetGstValue(0);
+            var vut = 0;
+            var resultGst = _sut.GetGstValue(vut);
+            var resultTotalNoGst = _sut.GetTotalExcludingGst(vut);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo(0));
+
+            Assert.That(resultGst, Is.Not.Null);
+            Assert.That(resultGst, Is.EqualTo(0));
+            Assert.That(resultTotalNoGst, Is.Not.Null);
+            Assert.That(resultTotalNoGst, Is.EqualTo(0));
+            Assert.That(resultGst + resultTotalNoGst, Is.EqualTo(vut));
         }
     }
 }

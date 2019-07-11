@@ -69,13 +69,13 @@ namespace Serko.Expenses.Core.Tests
         [Test]
         public void Valid_ComplexWithChildren () => Assert.That(_sut.IsValid(complexWithChildren), Is.True);
         [Test]
-        public void NotValid_OpenedComplex() => Assert.That(_sut.IsValid("asdf<tag>testasdf"), Is.False);
+        public void Exception_Valid_OpenedComplex() => Assert.Throws<InvalidInputException>(() => _sut.IsValid("asdf<tag>testasdf"));
         [Test]
         public void NotValid_ClosedComplex() => Assert.That(_sut.IsValid("asdf</tag>testasdf"), Is.False);
         [Test]
-        public void NotValid_OpenedComplexAndMoreValidTags() => Assert.That(_sut.IsValid("asdf<tag>testasdf<tag2>asdf</tag2>"), Is.False);
+        public void Exception_NotValid_OpenedComplexAndMoreValidTags() => Assert.Throws<InvalidInputException>(() => _sut.IsValid("asdf<tag>testasdf<tag2>asdf</tag2>"));
         [Test]
-        public void NotValid_OpenedComplexAndMoreNotValidTags() => Assert.That(_sut.IsValid("asdf<tag>testasdf<tag2>asdf<tag2>"), Is.False);
+        public void Exception_NotValid_OpenedComplexAndMoreNotValidTags() => Assert.Throws<InvalidInputException>(() => _sut.IsValid("asdf<tag>testasdf<tag2>asdf<tag2>"));
         [Test]
         public void Exception_TwiceClosedComplexAndMoreNotValidTags() => Assert.Throws<InvalidInputException>(() => _sut.IsValid(notCorrectComplexTwiceClosedString));
         [Test]

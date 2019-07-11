@@ -45,7 +45,10 @@ namespace Serko.Expenses.Core.ValueFinders
 
             if (text.Contains(OpeningTag))
             {
-                return text.Contains(ClosingTag);
+                if(!text.Contains(ClosingTag))
+                    throw new InvalidInputException($"Closing tag for {OpeningTag} not found!");
+
+                return true;
             }
 
             return false;

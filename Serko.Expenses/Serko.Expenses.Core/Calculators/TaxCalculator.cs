@@ -16,6 +16,13 @@ namespace Serko.Expenses.Core.Calculators
             return (total / (1+Tax))*Tax;
         }
 
+        public decimal GetTotalExcludingGst(decimal total)
+        {
+            var gst = GetGstValue(total);
+
+            return total - gst;
+        }
+
         public decimal GetValue(IDictionary<string, string> elements)
         {
             if (elements.ContainsKey(ValueName))

@@ -10,5 +10,6 @@ namespace Serko.Expenses.Core.Calculators
         string ValueName { get; }
         decimal GetValue(IDictionary<string, string> elements);
         decimal GetGstValue(decimal total);
+        decimal GetTotalExcludingGst(decimal total);
     }
 }
