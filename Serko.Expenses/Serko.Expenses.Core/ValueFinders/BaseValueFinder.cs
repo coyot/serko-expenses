@@ -19,10 +19,14 @@ namespace Serko.Expenses.Core.ValueFinders
         public string ClosingTag => $"</{TagName}>";
         public virtual IEnumerable<IValueFinder> ValueFinders { get; set; }
 
-
         public BaseValueFinder()
         {
             this.ValueFinders = new List<IValueFinder>();
+        }
+
+        public BaseValueFinder(IEnumerable<IValueFinder> finders)
+        {
+            this.ValueFinders = finders;
         }
 
         public virtual bool IsValid(string text)

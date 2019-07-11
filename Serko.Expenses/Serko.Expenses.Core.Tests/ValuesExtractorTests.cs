@@ -15,7 +15,7 @@ namespace Serko.Expenses.Core.Tests
         public void Setup()
         {
             var subfinders = new List<IValueFinder>() { new TotalValueFinder() };
-            _sut = new ValuesExtractor(subfinders);
+            _sut = new ValuesExtractor(subfinders, new List<IComplexValueFinder>());
 
         }
         [Test]

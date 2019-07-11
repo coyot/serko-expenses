@@ -32,9 +32,9 @@ namespace Serko.Expenses
                     .AddSingleton<IValueFinder, CostCentreValueFinder>()
                     .AddSingleton<IValueFinder, DateValueFinder>()
                     .AddSingleton<IValueFinder, DescriptionValueFinder>()
-                    .AddSingleton<IValueFinder, ExpenseValueFinder>()
                     .AddSingleton<IValueFinder, PaymentMethodValueFinder>()
                     .AddSingleton<IValueFinder, VendorValueFinder>();
+            services.AddSingleton<IComplexValueFinder, ExpenseValueFinder>();
             services.AddSingleton<ICalculator, TaxCalculator>();
             services.AddSingleton<IValuesExtractor, ValuesExtractor>();
             services.AddSingleton<IEngine, SerkoEngine>();

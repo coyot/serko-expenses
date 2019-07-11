@@ -96,7 +96,8 @@ namespace Serko.Expenses.Core.Tests
         public void ExctractValues_TotalValueSpecified654654_123andMoreFinders()
         {
             var finders = new List<IValueFinder>() { new TotalValueFinder(), new VendorValueFinder() };
-            var extractor = new ValuesExtractor(finders);
+
+            var extractor = new ValuesExtractor(finders, new List<IComplexValueFinder>());
 
             _sut = new SerkoEngine(extractor, calc);
             var values = _sut.ParseAndCalculateGst("the total value is <total>110</total>");
@@ -114,7 +115,7 @@ namespace Serko.Expenses.Core.Tests
         public void ExctractValues_TotalValueSpecified654654_123andMoreFindersWithProperValues()
         {
             var finders = new List<IValueFinder>() { new TotalValueFinder(), new VendorValueFinder() };
-            var extractor = new ValuesExtractor(finders);
+            var extractor = new ValuesExtractor(finders, new List<IComplexValueFinder>());
 
             _sut = new SerkoEngine(extractor, calc);
             var values = _sut.ParseAndCalculateGst("the total value is <total>110</total> and vendor <vendor>is vendor</vendor>");
@@ -132,8 +133,8 @@ namespace Serko.Expenses.Core.Tests
         [Test]
         public void ExctractValues_ExpenseSubTags()
         {
-            var finders = new List<IValueFinder>() { new TotalValueFinder(), new VendorValueFinder(), new ExpenseValueFinder() };
-            var extractor = new ValuesExtractor(finders);
+            var finders = new List<IValueFinder>() { new TotalValueFinder(), new VendorValueFinder(), new ExpenseValueFinder(new List<IValueFinder>() { new VendorValueFinder() }) };
+            var extractor = new ValuesExtractor(finders, new List<IComplexValueFinder>());
 
             _sut = new SerkoEngine(extractor, calc);
             var values = _sut.ParseAndCalculateGst("<expense><vendor>asdf</vendor></expense><total>1234</total>");
@@ -141,11 +142,11 @@ namespace Serko.Expenses.Core.Tests
             Assert.That(values, Is.Not.Null);
             Assert.That(values.Keys, Is.Not.Empty);
             Assert.That(values.Values, Is.Not.Empty);
-            Assert.That(values.Keys.Count, Is.EqualTo(5));
-            Assert.That(values["total"], Is.EqualTo("110"));
-            Assert.That(values["gst"], Is.EqualTo("10,00"));
-            Assert.That(values["totalNoGst"], Is.EqualTo("100,00"));
-            Assert.That(values["vendor"], Is.EqualTo("is vendor"));//<expense><vendor>asdf</vendor></expense><total>1234</total>
+            Assert.That(values.Keys.Count, Is.EqualTo(4));
+            Assert.That(values["total"], Is.EqualTo("1234"));
+            Assert.That(values["gst"], Is.EqualTo("112,18"));
+            Assert.That(values["totalNoGst"], Is.EqualTo("1121,82"));
+            Assert.That(values["vendor"], Is.EqualTo("asdf"));
         }
     }
 }

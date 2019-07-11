@@ -41,7 +41,14 @@ namespace Serko.Expenses.API.Controllers
         [HttpPost]
         public ActionResult<IDictionary<string, string>> Post([FromBody] string value)
         {
-            return Ok(_engine.ParseAndCalculateGst(value));
+            try
+            {
+                return Ok(_engine.ParseAndCalculateGst(value));
+            }
+            catch (ExpenseException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

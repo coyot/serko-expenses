@@ -9,16 +9,21 @@ namespace Serko.Expenses.Core
 {
     public class ValuesExtractor : IValuesExtractor
     {
-        private IList<IValueFinder> ValueFinders { get; set; }
+        private IEnumerable<IValueFinder> ValueFinders { get; set; }
+        private IEnumerable<IComplexValueFinder> ValueComplexFinders { get; set; }
 
-        public ValuesExtractor(IEnumerable<IValueFinder> valueFinders)
+        public ValuesExtractor(IEnumerable<IValueFinder> valueFinders, IEnumerable<IComplexValueFinder> complexFinders)
         {
-            ValueFinders = valueFinders.ToList();
+            ValueFinders = valueFinders;
+            ValueComplexFinders = complexFinders;
         }
 
         public IDictionary<string, string> ExtractValues(string text)
         {
             var result = new Dictionary<string, string>();
+
+            if (string.IsNullOrEmpty(text))
+                return result;
 
             foreach (var finder in ValueFinders)
             {
