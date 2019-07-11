@@ -15,8 +15,8 @@ namespace Serko.Expenses.Core.ValueFinders
     {
         public abstract string TagName { get; }
 
-        private string OpeningTag => $"<{TagName}>";
-        private string ClosingTag => $"</{TagName}>";
+        public string OpeningTag => $"<{TagName}>";
+        public string ClosingTag => $"</{TagName}>";
         private IList<IValueFinder> _valueFinders;
 
         public BaseValueFinder()
@@ -29,7 +29,7 @@ namespace Serko.Expenses.Core.ValueFinders
             _valueFinders = finders;
         }
 
-        public bool IsValid(string text)
+        public virtual bool IsValid(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return false;
