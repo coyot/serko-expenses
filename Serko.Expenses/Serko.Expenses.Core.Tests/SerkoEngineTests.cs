@@ -91,5 +91,42 @@ namespace Serko.Expenses.Core.Tests
             Assert.That(values["gst"], Is.EqualTo("59514,01"));
             Assert.That(values["totalNoGst"], Is.EqualTo("595140,11"));
         }
+
+        [Test]
+        public void ExctractValues_TotalValueSpecified654654_123andMoreFinders()
+        {
+            var finders = new List<IValueFinder>() { new TotalValueFinder(), new VendorValueFinder() };
+            var extractor = new ValuesExtractor(finders);
+
+            _sut = new SerkoEngine(extractor, calc);
+            var values = _sut.ParseAndCalculateGst("the total value is <total>110</total>");
+
+            Assert.That(values, Is.Not.Null);
+            Assert.That(values.Keys, Is.Not.Empty);
+            Assert.That(values.Values, Is.Not.Empty);
+            Assert.That(values.Keys.Count, Is.EqualTo(3));
+            Assert.That(values["total"], Is.EqualTo("110"));
+            Assert.That(values["gst"], Is.EqualTo("10,00"));
+            Assert.That(values["totalNoGst"], Is.EqualTo("100,00"));
+        }
+
+        [Test]
+        public void ExctractValues_TotalValueSpecified654654_123andMoreFindersWithProperValues()
+        {
+            var finders = new List<IValueFinder>() { new TotalValueFinder(), new VendorValueFinder() };
+            var extractor = new ValuesExtractor(finders);
+
+            _sut = new SerkoEngine(extractor, calc);
+            var values = _sut.ParseAndCalculateGst("the total value is <total>110</total> and vendor <vendor>is vendor</vendor>");
+
+            Assert.That(values, Is.Not.Null);
+            Assert.That(values.Keys, Is.Not.Empty);
+            Assert.That(values.Values, Is.Not.Empty);
+            Assert.That(values.Keys.Count, Is.EqualTo(4));
+            Assert.That(values["total"], Is.EqualTo("110"));
+            Assert.That(values["gst"], Is.EqualTo("10,00"));
+            Assert.That(values["totalNoGst"], Is.EqualTo("100,00"));
+            Assert.That(values["vendor"], Is.EqualTo("is vendor"));
+        }
     }
 }

@@ -17,16 +17,12 @@ namespace Serko.Expenses.Core.ValueFinders
 
         public string OpeningTag => $"<{TagName}>";
         public string ClosingTag => $"</{TagName}>";
-        private IList<IValueFinder> _valueFinders;
+        public virtual IEnumerable<IValueFinder> ValueFinders { get; set; }
+
 
         public BaseValueFinder()
         {
-            _valueFinders = new List<IValueFinder>();
-        }
-
-        public BaseValueFinder(IList<IValueFinder> finders)
-        {
-            _valueFinders = finders;
+            this.ValueFinders = new List<IValueFinder>();
         }
 
         public virtual bool IsValid(string text)
@@ -70,7 +66,7 @@ namespace Serko.Expenses.Core.ValueFinders
                 return result;
 
             }
-            foreach (var finder in _valueFinders)
+            foreach (var finder in ValueFinders)
             {
                 var foundValues = finder.ExtractValues(insideIsland);
 
@@ -96,7 +92,7 @@ namespace Serko.Expenses.Core.ValueFinders
 
         public bool HasChildren(string island)
         {
-            return _valueFinders.Any(finder => finder.ShouldProcess(island));
+            return ValueFinders.Any(finder => finder.ShouldProcess(island));
         }
 
         public IList<string> GetChildren(string island)
@@ -106,7 +102,7 @@ namespace Serko.Expenses.Core.ValueFinders
 
             var result = new List<string>();
 
-            foreach(var finder in _valueFinders)
+            foreach(var finder in ValueFinders)
             {
                 if (finder.ShouldProcess(island))
                     result.Add(finder.ExtractIsland(island));

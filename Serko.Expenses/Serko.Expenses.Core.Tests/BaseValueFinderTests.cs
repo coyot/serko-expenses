@@ -9,9 +9,6 @@ namespace Serko.Expenses.Core.Tests
     {
         private class TagBaseValueFinderImpl : BaseValueFinder
         {
-            public TagBaseValueFinderImpl(IList<IValueFinder> finders) : base(finders)
-            {
-            }
 
             public override string TagName { get => "tag"; }
         }
@@ -35,8 +32,8 @@ namespace Serko.Expenses.Core.Tests
         [SetUp]
         public void Setup()
         {
-            var subfinders = new List<IValueFinder>() { new Tag2BaseValueFinderImpl(), new Tag3BaseValueFinderImpl() };
-            _sut = new TagBaseValueFinderImpl(subfinders);
+            //var subfinders = new List<IValueFinder>() { new Tag2BaseValueFinderImpl(new List<IValueFinder>()), new Tag3BaseValueFinderImpl(new List<IValueFinder>()) };
+            _sut = new TagBaseValueFinderImpl();
         }
 
         [Test]

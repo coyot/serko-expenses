@@ -7,6 +7,10 @@ namespace Serko.Expenses.Core.ValueFinders
     public class CostCentreValueFinder : BaseValueFinder
     {
         public override string TagName => "cost_centre";
+        public override bool ShouldProcess(string text)
+        {
+            return true;
+        }
 
         public override bool IsValid(string text)
         {

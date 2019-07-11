@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serko.Expenses.Core;
+using Serko.Expenses.Core.Calculators;
+using Serko.Expenses.Core.ValueFinders;
 
 namespace Serko.Expenses
 {
@@ -25,6 +28,16 @@ namespace Serko.Expenses
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IValueFinder, TotalValueFinder>()
+                    .AddSingleton<IValueFinder, CostCentreValueFinder>()
+                    .AddSingleton<IValueFinder, DateValueFinder>()
+                    .AddSingleton<IValueFinder, DescriptionValueFinder>()
+                    .AddSingleton<IValueFinder, ExpenseValueFinder>()
+                    .AddSingleton<IValueFinder, PaymentMethodValueFinder>()
+                    .AddSingleton<IValueFinder, VendorValueFinder>();
+            services.AddSingleton<ICalculator, TaxCalculator>();
+            services.AddSingleton<IValuesExtractor, ValuesExtractor>();
+            services.AddSingleton<IEngine, SerkoEngine>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddOpenApiDocument();
         }

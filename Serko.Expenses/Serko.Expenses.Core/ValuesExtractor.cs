@@ -11,12 +11,9 @@ namespace Serko.Expenses.Core
     {
         private IList<IValueFinder> ValueFinders { get; set; }
 
-        public ValuesExtractor()
+        public ValuesExtractor(IEnumerable<IValueFinder> valueFinders)
         {
-        }
-        public ValuesExtractor(IList<IValueFinder> valueFinders)
-        {
-            ValueFinders = valueFinders;
+            ValueFinders = valueFinders.ToList();
         }
 
         public IDictionary<string, string> ExtractValues(string text)
