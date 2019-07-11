@@ -5,6 +5,11 @@ using System.Text;
 
 namespace Serko.Expenses.Core
 {
+    /// <summary>
+    /// Main engine. Two purposes
+    ///  - extract values
+    ///  - calculate gst and total-gst and add to the resulted kvp result
+    /// </summary>
     public class SerkoEngine : IEngine
     {
         IValuesExtractor ValuesExtractor { get; set; }

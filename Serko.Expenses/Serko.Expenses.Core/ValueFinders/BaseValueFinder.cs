@@ -29,29 +29,23 @@ namespace Serko.Expenses.Core.ValueFinders
             this.ValueFinders = finders;
         }
 
-        public virtual bool IsValid(string text)
+        public IDictionary<string, string> Process(string text)
+        {
+            if (!ShouldProcess(text))
+                return new Dictionary<string, string>();
+
+            if (!IsValid(text))
+                return new Dictionary<string, string>();
+
+            return ExtractValues(text);
+        }
+
+        public virtual bool ShouldProcess(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return false;
 
-            var regexOpen = new Regex(OpeningTag);
-            var regexClose = new Regex(ClosingTag);
-
-            if (regexOpen.Matches(text).Count > 1)
-                throw new InvalidInputException("Illegal state - too many opening tags");
-
-            if (regexClose.Matches(text).Count > 1)
-                throw new InvalidInputException("Illegal state - too many closing tags");
-
-            if (text.Contains(OpeningTag))
-            {
-                if(!text.Contains(ClosingTag))
-                    throw new InvalidInputException($"Closing tag for {OpeningTag} not found!");
-
-                return true;
-            }
-
-            return false;
+            return text.Contains(OpeningTag) || text.Contains(ClosingTag);
         }
 
         public virtual IDictionary<string, string> ExtractValues(string text)
@@ -86,6 +80,32 @@ namespace Serko.Expenses.Core.ValueFinders
             return result;
         }
 
+        public virtual bool IsValid(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return false;
+
+            var regexOpen = new Regex(OpeningTag);
+            var regexClose = new Regex(ClosingTag);
+
+            if (regexOpen.Matches(text).Count > 1)
+                throw new InvalidInputException("Illegal state - too many opening tags");
+
+            if (regexClose.Matches(text).Count > 1)
+                throw new InvalidInputException("Illegal state - too many closing tags");
+
+            if (text.Contains(OpeningTag))
+            {
+                if(!text.Contains(ClosingTag))
+                    throw new InvalidInputException($"Closing tag for {OpeningTag} not found!");
+
+                return true;
+            }
+
+            return false;
+        }
+
+
         public string ExtractIsland(string text)
         {
             var openIndex = text.IndexOf(OpeningTag);
@@ -113,25 +133,6 @@ namespace Serko.Expenses.Core.ValueFinders
             }
 
             return result;
-        }
-
-        public IDictionary<string, string> Process(string text)
-        {
-            if (!ShouldProcess(text))
-                return new Dictionary<string, string>();
-
-            if (!IsValid(text))
-                return new Dictionary<string, string>();
-
-            return ExtractValues(text);
-        }
-
-        public virtual bool ShouldProcess(string text)
-        {
-            if (string.IsNullOrEmpty(text))
-                return false;
-
-            return text.Contains(OpeningTag) || text.Contains(ClosingTag);
         }
     }
 }

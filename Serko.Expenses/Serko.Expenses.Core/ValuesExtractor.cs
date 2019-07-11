@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Serko.Expenses.Core
 {
+    /// <summary>
+    /// Extract key-value pairs from text based on configured tags
+    /// </summary>
     public class ValuesExtractor : IValuesExtractor
     {
         private IEnumerable<IValueFinder> ValueFinders { get; set; }
@@ -31,7 +34,7 @@ namespace Serko.Expenses.Core
             return result;
         }
 
-        public IDictionary<string, string> ProcessSimple(string text, IDictionary<string, string> result)
+        private IDictionary<string, string> ProcessSimple(string text, IDictionary<string, string> result)
         {
             foreach (var finder in ValueFinders)
             {
@@ -42,7 +45,7 @@ namespace Serko.Expenses.Core
             return result;
         }
 
-        public IDictionary<string, string> ProcessComplex(string text, IDictionary<string, string> result)
+        private IDictionary<string, string> ProcessComplex(string text, IDictionary<string, string> result)
         {
             foreach (var finder in ValueComplexFinders)
             {
