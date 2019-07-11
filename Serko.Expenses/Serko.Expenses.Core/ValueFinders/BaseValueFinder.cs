@@ -54,7 +54,7 @@ namespace Serko.Expenses.Core.ValueFinders
             return false;
         }
 
-        public IDictionary<string, string> ExtractValues(string text)
+        public virtual IDictionary<string, string> ExtractValues(string text)
         {
             var result = new Dictionary<string, string>();
 
