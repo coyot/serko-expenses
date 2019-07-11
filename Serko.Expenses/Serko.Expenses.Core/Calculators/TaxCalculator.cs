@@ -13,7 +13,7 @@ namespace Serko.Expenses.Core.Calculators
 
         public decimal GetGstValue(decimal total)
         {
-            throw new NotImplementedException();
+            return (total / (1+Tax))*Tax;
         }
 
         public decimal GetValue(IDictionary<string, string> elements)

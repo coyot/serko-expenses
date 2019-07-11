@@ -44,6 +44,15 @@ namespace Serko.Expenses.Core.Tests
         }
 
         [Test]
+        public void GetGst_1000000000()
+        {
+            var result = _sut.GetGstValue(11000000000);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.EqualTo(1000000000));
+        }
+
+        [Test]
         public void GetGst_0()
         {
             var result = _sut.GetGstValue(0);
