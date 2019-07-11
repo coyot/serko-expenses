@@ -1,6 +1,7 @@
 ﻿using Serko.Expenses.Core.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -10,13 +11,23 @@ namespace Serko.Expenses.Core.ValueFinders
     /// Base class for text operation - main idea is to find the "island" of xml
     /// value within the text.
     /// </summary>
-    public abstract class BaseValueFinder : IValueFider
+    public abstract class BaseValueFinder : IValueFinder
     {
         public abstract string TagName { get; }
 
         private string OpeningTag => $"<{TagName}>";
         private string ClosingTag => $"</{TagName}>";
+        private IList<IValueFinder> _valueFinders;
 
+        public BaseValueFinder()
+        {
+            _valueFinders = new List<IValueFinder>();
+        }
+
+        public BaseValueFinder(IList<IValueFinder> finders)
+        {
+            _valueFinders = finders;
+        }
 
         public bool IsValid(string text)
         {
@@ -42,57 +53,74 @@ namespace Serko.Expenses.Core.ValueFinders
 
         public IDictionary<string, string> ExtractValues(string text)
         {
-            if (!IsValid(text))
-                return null;
-
             var result = new Dictionary<string, string>();
+
+            if (!IsValid(text))
+                return result;
+
             var island = this.ExtractIsland(text);
+            var insideIsland = island.Substring(OpeningTag.Length, island.Length - ClosingTag.Length - OpeningTag.Length);
             if (!HasChildren(island))
             {
-                var openLength = OpeningTag.Length;
-                var closeLength = ClosingTag.Length;
-                var substring = island.Substring(openLength, island.Length - openLength - closeLength);
-                result.Add(TagName, substring);
+                result.Add(TagName, insideIsland);
 
                 return result;
 
             }
-            return null;
+            foreach (var finder in _valueFinders)
+            {
+                var foundValues = finder.ExtractValues(insideIsland);
+
+                foreach (var value in foundValues)
+                {
+                    if (result.ContainsKey(value.Key))
+                        throw new InvalidInputException("Double tags in your input. Please validate!");
+
+                    result.Add(value.Key, value.Value);
+                }
+            }
+
+            return result;
         }
 
         public string ExtractIsland(string text)
         {
-            if(text.StartsWith(OpeningTag) && text.EndsWith(ClosingTag))
-                return text;
-
             var openIndex = text.IndexOf(OpeningTag);
             var closeIndex = text.IndexOf(ClosingTag);
 
-            return text.Substring(openIndex, closeIndex + ClosingTag.Length - openIndex);
+            return text.Substring(openIndex, closeIndex  - openIndex + ClosingTag.Length);
         }
 
-        public bool HasChildren(string text)
+        public bool HasChildren(string island)
         {
-            return false;
+            return _valueFinders.Any(finder => finder.ShouldProcess(island));
         }
 
-        public IList<string> GetChildren(string text)
+        public IList<string> GetChildren(string island)
         {
-            if (!HasChildren(text))
-                return null;
+            if (!HasChildren(island))
+                return new List<string>(0);
 
-            return null;
+            var result = new List<string>();
+
+            foreach(var finder in _valueFinders)
+            {
+                if (finder.ShouldProcess(island))
+                    result.Add(finder.ExtractIsland(island));
+            }
+
+            return result;
         }
 
         public IDictionary<string, string> Process(string text)
         {
-            if (!ShouldProcess(OpeningTag))
-                return null;
+            if (!ShouldProcess(text))
+                return new Dictionary<string, string>();
 
-            if (!IsValid(OpeningTag))
-                return null;
+            if (!IsValid(text))
+                return new Dictionary<string, string>();
 
-            return null;
+            return ExtractValues(text);
         }
 
         public bool ShouldProcess(string text)

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Serko.Expenses.Core.ValueFinders
 {
-    interface IValueFider
+    public interface IValueFinder
     {
         IDictionary<string, string> Process(string text);
         bool IsValid(string text);

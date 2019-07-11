@@ -8,7 +8,7 @@ namespace Serko.Expenses.Core
 {
     class ValuesExtractor
     {
-        private IList<IValueFider> Finders { get; set; }
+        private IList<IValueFinder> Finders { get; set; }
 
         public ValuesExtractor()
         {
